@@ -1,0 +1,10 @@
+version: '3'
+services:
+  exchange-api:
+    container_name: exchange-api-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: api-server
+    ports:
+      - '3000:3000'

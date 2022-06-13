@@ -1,0 +1,6 @@
+/.pre-commit-config.yaml
+/.vscode
+/Makefile
+/requirements-dev.txt
+/setup.cfg
+__pycache__/
