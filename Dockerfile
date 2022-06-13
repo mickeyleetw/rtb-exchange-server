@@ -8,6 +8,6 @@ COPY ./src /src
 WORKDIR /src
 ENV PYTHONPATH /src
 
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3001"]
