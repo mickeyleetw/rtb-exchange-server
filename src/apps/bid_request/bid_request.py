@@ -1,11 +1,9 @@
-from typing import Union
-
 from fastapi import APIRouter
-
-from core.response import default_responses, response_404,response_201
 from starlette import status
 
-from .model import RetrieveBidResultModel,CreateBidRequestModel
+from core.response import default_responses, response_201, response_404
+
+from .model import CreateBidRequestModel, RetrieveBidResultModel
 
 router = APIRouter(prefix="", tags=['Bid Request'], responses=default_responses)
 
@@ -16,9 +14,11 @@ router = APIRouter(prefix="", tags=['Bid Request'], responses=default_responses)
     response_model=RetrieveBidResultModel,
     responses={
         **response_404('Bid Request'),
-        **response_201(RetrieveBidResultModel,'Bid Request')
+        **response_201(RetrieveBidResultModel, 'Bid Request')
     }
 )
-async def fire_bid_request(data:CreateBidRequestModel) -> RetrieveBidResultModel:
+async def fire_bid_request(data: CreateBidRequestModel) -> RetrieveBidResultModel:
     # TODO: to be implemented
+    # should hit bidder-api to announce bid-request
+
     pass
