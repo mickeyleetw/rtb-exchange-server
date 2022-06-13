@@ -11,7 +11,7 @@ from urllib3.util.retry import Retry
 from core.enums import ErrorCode
 from core.exception import BidderServiceException
 
-RTB_BIDDER_API_URL = os.getenv('BIDDER_API_URL', 'http://localhost:8003/')
+RTB_BIDDER_API_URL = os.getenv('BIDDER_API_URL', 'http://localhost:3002/')
 RTB_BIDDER_API_RETIRES = 1
 
 
