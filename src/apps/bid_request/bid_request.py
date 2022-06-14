@@ -19,6 +19,8 @@ router = APIRouter(prefix="", tags=['Bid Request'], responses=default_responses)
 )
 async def fire_bid_request(data: CreateBidRequestModel) -> RetrieveBidResultModel:
     # TODO: to be implemented
-    # should hit bidder-api to announce bid-request
+    # 1. check session_response is allowed or not
+    # 2. fire-bid request and exchange should follow the response by bid-request to call bider-server POST bid request
+    # 3. collect the bidder-response and determine who won the bid and return to response to client
 
     pass

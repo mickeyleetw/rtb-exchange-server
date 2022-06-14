@@ -5,12 +5,15 @@ from typing import Callable
 
 import requests
 from fastapi import status
+from fastapi.encoders import jsonable_encoder
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+from adapters.bidder_server.model import BidderSessionResponseModel, InitBidderSessionModel
 from core.enums import ErrorCode
 from core.exception import BidderServiceException
 
+MOUNT_PREFIX = os.getenv('MOUNT_PREFIX', 'http://')
 RTB_BIDDER_API_URL = os.getenv('BIDDER_API_URL', 'http://localhost:3002/')
 RTB_BIDDER_API_RETIRES = 1
 
@@ -50,6 +53,17 @@ class BidderServiceAdapter:
             ]
         )
         session = requests.Session()
-        session.mount(RTB_BIDDER_API_URL, HTTPAdapter(max_retries=retries))
+        session.mount(MOUNT_PREFIX, HTTPAdapter(max_retries=retries))
 
         return session
+
+    @classmethod
+    @http_error_handler
+    async def init_bidder_session(
+        cls, rtb_bidder_api_url: str, bidder_session: InitBidderSessionModel
+    ) -> BidderSessionResponseModel:
+        session = cls.get_request_session()
+        resp = session.post(f'{rtb_bidder_api_url}/sessions/init', json=jsonable_encoder(bidder_session))
+        resp.raise_for_status()
+        bidder_session_response = BidderSessionResponseModel(**(resp.json()))
+        return bidder_session_response

@@ -70,23 +70,5 @@ def response_404(subject: str) -> dict:
     }
 
 
-# TODO: to be modified
-# def response_400(subject: str) -> dict:
-#     return {
-#         status.HTTP_400_BAD_REQUEST:
-#             {
-#                 'model': ErrorMessage,
-#                 'description': f'{subject} has no updated content',
-#                 'content':
-#                     {
-#                         'application/json':
-#                             {
-#                                 'example':
-#                                     {
-#                                         'code': ErrorCode.GENERAL_1009_UPDATE_CONTENT_NOT_FOUND,
-#                                         'message': f'{subject} has no updated content'
-#                                     }
-#                             }
-#                     },
-#             }
-#     }
+def response_400() -> dict:
+    return {status.HTTP_400_BAD_REQUEST: {'model': ErrorMessage, 'description': 'Bidder API unexpected error'}}

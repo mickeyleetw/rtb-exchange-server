@@ -1,30 +1,36 @@
-from uuid import UUID
+from fastapi import APIRouter
 
-from fastapi import APIRouter, Depends, Response
+from adapters.bidder_server.model import InitBidderSessionModel
+from core.enums import ResultEnum
+from core.response import default_responses, response_201, response_400
+from repository.session import SessionRepo
 
-from core.response import default_responses
-from repository.session import cookie
-
-from .model import InitSessionModel, SessionResponseModel
+from .model import EndSessionModel, InitSessionModel, SessionResponseModel
 
 router = APIRouter(prefix='/sessions', tags=['Session'], responses=default_responses)
 
 
-@router.post('/init', response_model=SessionResponseModel)
-async def init_session(data: InitSessionModel, response: Response) -> SessionResponseModel:
-    # TODO: to be implemented
-    pass
-    # session_id=data.session_id
-    # new_data=data.dict()
-    # new_data.pop(session_id)
-    # await backend.create(session_id, new_data)
-    # cookie.attach_to_response(response, session_id)
+@router.post(
+    '/init',
+    response_model=SessionResponseModel,
+    responses={
+        **response_201(InitSessionModel, 'Session'),
+        **response_400()
+    }
+)
+async def init_session(data: InitSessionModel) -> SessionResponseModel:
+
+    bidder_session = InitBidderSessionModel(
+        session_id=data.session_id,
+        estimated_traffic=data.estimated_traffic,
+        budget=data.bidder_setting.budget,
+        impression_goal=data.bidder_setting.impression_goal
+    )
+    for bidder in data.bidders:
+        await SessionRepo.init_bidder_session(bidder_endpoint=bidder.endpoint, bidder_session=bidder_session)
+    return SessionResponseModel(result=ResultEnum.ALLOWED)
 
 
 @router.post('/end', response_model=SessionResponseModel)
-async def end_session(response: Response, session_id: UUID = Depends(cookie)) -> SessionResponseModel:
-    # TODO: to be implemented
+async def end_session(data: EndSessionModel) -> SessionResponseModel:
     pass
-
-    # await backend.delete(session_id)
-    # cookie.delete_from_response(response)

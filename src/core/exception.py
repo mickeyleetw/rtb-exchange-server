@@ -18,6 +18,7 @@ class BaseException_(Exception):
 
 
 class BidderServiceException(BaseException_):
+    http_status = status.HTTP_400_BAD_REQUEST
     code = ErrorCode.BIDDER_API_3001_UNKNOWN_ERROR
     message = 'Bidder API service error'
 
