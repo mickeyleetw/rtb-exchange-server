@@ -46,3 +46,13 @@ class EmptyQueryParamsException(BaseException_):
             http_status=status.HTTP_428_PRECONDITION_REQUIRED,
             message=msg
         )
+
+
+class InvalidStateTransitionException(BaseException_):
+
+    def __init__(self):
+        super().__init__(
+            code=ErrorCode.GENERAL_1004_INVALID_STATE_TRANSITION,
+            http_status=status.HTTP_403_FORBIDDEN,
+            message='state error'
+        )

@@ -1,11 +1,13 @@
+from collections import defaultdict
+
 from fastapi import APIRouter
+from starlette import status
 
-from adapters.bidder_server.model import InitBidderSessionModel
-from core.enums import ResultEnum
-from core.response import default_responses, response_201, response_400
+from adapters.bidder_server.model import BidderSessionResponseModel, InitBidderSessionModel
+from apps.session.model import EndSessionModel, InitSessionModel, SessionResponseModel
+from core.enums import ErrorCode
+from core.response import default_responses, response_201, response_400, response_403, response_404
 from repository.session import SessionRepo
-
-from .model import EndSessionModel, InitSessionModel, SessionResponseModel
 
 router = APIRouter(prefix='/sessions', tags=['Session'], responses=default_responses)
 
@@ -26,11 +28,36 @@ async def init_session(data: InitSessionModel) -> SessionResponseModel:
         budget=data.bidder_setting.budget,
         impression_goal=data.bidder_setting.impression_goal
     )
+
+    bidder_resp_map: dict[str, BidderSessionResponseModel] = defaultdict()
+
     for bidder in data.bidders:
-        await SessionRepo.init_bidder_session(bidder_endpoint=bidder.endpoint, bidder_session=bidder_session)
-    return SessionResponseModel(result=ResultEnum.ALLOWED)
+        bidder_session_resp = await SessionRepo.init_bidder_session(
+            bidder_endpoint=bidder.endpoint, bidder_session=bidder_session
+        )
+        bidder_resp_map[bidder.name] = bidder_session_resp
+    new_session = SessionRepo.create_session(session_data=data, bidder_resp_map=bidder_resp_map)
+    return SessionRepo.convert_session_response_to_model(session=new_session)
 
 
-@router.post('/end', response_model=SessionResponseModel)
+@router.post(
+    '/end',
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_model=SessionResponseModel,
+    responses={
+        **response_404('Session'),
+        **response_400(),
+        **response_403(ErrorCode.GENERAL_1004_INVALID_STATE_TRANSITION, 'state error'),
+    }
+)
 async def end_session(data: EndSessionModel) -> SessionResponseModel:
-    pass
+    session = SessionRepo.get_session(data.session_id)
+    SessionRepo.check_session_status_is_valid(session=session)
+    bidder_resp_map: dict[str, BidderSessionResponseModel] = defaultdict()
+    for bidder in session.bidders:
+        bidder_session_resp = await SessionRepo.init_bidder_session(
+            bidder_endpoint=bidder.endpoint, bidder_session=data
+        )
+        bidder_resp_map[bidder.name] = bidder_session_resp
+    session = SessionRepo.update_session(session=session, bidder_resp_map=bidder_resp_map)
+    return SessionRepo.convert_session_response_to_model(session=session)

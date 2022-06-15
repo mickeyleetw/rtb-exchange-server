@@ -9,7 +9,7 @@ from fastapi.encoders import jsonable_encoder
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from adapters.bidder_server.model import BidderSessionResponseModel, InitBidderSessionModel
+from adapters.bidder_server.model import BidderSessionResponseModel, EndBidderSessionModel, InitBidderSessionModel
 from core.enums import ErrorCode
 from core.exception import BidderServiceException
 
@@ -64,6 +64,17 @@ class BidderServiceAdapter:
     ) -> BidderSessionResponseModel:
         session = cls.get_request_session()
         resp = session.post(f'{rtb_bidder_api_url}/sessions/init', json=jsonable_encoder(bidder_session))
+        resp.raise_for_status()
+        bidder_session_response = BidderSessionResponseModel(**(resp.json()))
+        return bidder_session_response
+
+    @classmethod
+    @http_error_handler
+    async def end_bidder_session(
+        cls, rtb_bidder_api_url: str, bidder_session: EndBidderSessionModel
+    ) -> BidderSessionResponseModel:
+        session = cls.get_request_session()
+        resp = session.post(f'{rtb_bidder_api_url}/sessions/end', json=jsonable_encoder(bidder_session))
         resp.raise_for_status()
         bidder_session_response = BidderSessionResponseModel(**(resp.json()))
         return bidder_session_response

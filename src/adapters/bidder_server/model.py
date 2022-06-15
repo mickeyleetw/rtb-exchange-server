@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from pydantic import BaseModel
 
-from core.enums import ResultEnum
+from core.enums import ResultEnum, SessionStatusEnum
 
 
 class BidderModel(BaseModel):
@@ -27,4 +27,6 @@ class EndBidderSessionModel(BaseModel):
 
 
 class BidderSessionResponseModel(BaseModel):
+    session_id: str
+    status: SessionStatusEnum
     result: ResultEnum

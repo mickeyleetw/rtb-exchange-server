@@ -6,6 +6,7 @@ class ErrorCode(enum.IntEnum):
     GENERAL_1001_UNEXPECTED_ERROR = 1001
     GENERAL_1002_REQUEST_VALIDATION_FAILED = 1002
     GENERAL_1003_REQUEST_VALIDATION_FAILED = 1003
+    GENERAL_1004_INVALID_STATE_TRANSITION = 1004
 
     RESOURCE_2001_NOT_FOUND = 2001
 
@@ -19,3 +20,8 @@ class StrEnum(str, enum.Enum):
 
 class ResultEnum(StrEnum):
     ALLOWED = 'ok'
+
+
+class SessionStatusEnum(StrEnum):
+    OPENED = 'opened'
+    CLOSED = 'closed'

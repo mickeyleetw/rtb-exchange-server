@@ -27,4 +27,7 @@ class EndSessionModel(BaseModel):
 
 
 class SessionResponseModel(BaseModel):
+    session_id: str
+    estimated_traffic: int
+    bidders: list[BidderModel]
     result: ResultEnum

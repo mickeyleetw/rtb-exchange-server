@@ -70,5 +70,23 @@ def response_404(subject: str) -> dict:
     }
 
 
+def response_403(code: ErrorCode, message: str) -> dict:
+    return {
+        status.HTTP_403_FORBIDDEN:
+            {
+                'model': ErrorMessage,
+                'description': 'Forbidden',
+                'content': {
+                    'application/json': {
+                        'example': {
+                            'code': code,
+                            'message': message
+                        }
+                    }
+                }
+            }
+    }
+
+
 def response_400() -> dict:
     return {status.HTTP_400_BAD_REQUEST: {'model': ErrorMessage, 'description': 'Bidder API unexpected error'}}
