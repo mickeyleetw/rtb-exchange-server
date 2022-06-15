@@ -25,14 +25,14 @@ def http_error_handler(func: Callable):
         try:
             return await func(*args, **kwargs)
         except requests.exceptions.ConnectionError as e:
-            raise BidderServiceException(code=ErrorCode.BIDDER_API_3002_CONNECTION_ERROR, msg=str(e))
+            return BidderServiceException(code=ErrorCode.BIDDER_API_3002_CONNECTION_ERROR, msg=str(e))
         except requests.exceptions.HTTPError as e:
             try:
                 data = e.response.json(strict=False)
                 msg = f"{data['code']}, {data['message']}"
             except (JSONDecodeError, KeyError):
                 msg = e.response.text
-            raise BidderServiceException(msg)
+            return BidderServiceException(msg)
 
     return wrapper
 

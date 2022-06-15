@@ -22,7 +22,9 @@ class SessionRepo:
         )
 
     @staticmethod
-    async def end_session(bidder_endpoint: str, bidder_session: EndBidderSessionModel) -> BidderSessionResponseModel:
+    async def end_bidder_session(
+        bidder_endpoint: str, bidder_session: EndBidderSessionModel
+    ) -> BidderSessionResponseModel:
         return await BidderServiceAdapter.end_bidder_session(
             rtb_bidder_api_url=bidder_endpoint, bidder_session=bidder_session
         )
@@ -65,12 +67,11 @@ class SessionRepo:
     def update_session(session: SessionSchema, bidder_resp_map: dict) -> SessionSchema:
         session['status'] = SessionStatusEnum.CLOSED
         for bidder in session['bidders']:
-            for name, schema in bidder.items():
-                bidder_name = list(name)[0]
-                bidder_schema = list(schema)[0]
-                bidder = SessionRepo.update_bidder_session_schema(
-                    bidder=bidder_schema, update_bidder_data=bidder_resp_map[bidder_name]
-                )
+            bidder_name = list(bidder.keys())[0]
+            bidder_schema = list(bidder.values())[0]
+            bidder = SessionRepo.update_bidder_session_schema(
+                bidder=bidder_schema, update_bidder_data=bidder_resp_map[bidder_name]
+            )
         return session
 
     @staticmethod

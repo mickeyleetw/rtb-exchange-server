@@ -38,13 +38,11 @@ class ResourceNotFoundException(BaseException_):
         )
 
 
-class EmptyQueryParamsException(BaseException_):
+class UnauthorizedBehaviorException(BaseException_):
 
-    def __init__(self, msg: str):
+    def __init__(self, message: str):
         super().__init__(
-            code=ErrorCode.GENERAL_1003_REQUEST_VALIDATION_FAILED,
-            http_status=status.HTTP_428_PRECONDITION_REQUIRED,
-            message=msg
+            http_status=status.HTTP_403_FORBIDDEN, code=ErrorCode.GENERAL_1004_UNAUTHORIZED_BEHAVIOR, message=message
         )
 
 
@@ -52,7 +50,7 @@ class InvalidStateTransitionException(BaseException_):
 
     def __init__(self):
         super().__init__(
-            code=ErrorCode.GENERAL_1004_INVALID_STATE_TRANSITION,
+            code=ErrorCode.GENERAL_1003_INVALID_STATE_TRANSITION,
             http_status=status.HTTP_403_FORBIDDEN,
             message='state error'
         )

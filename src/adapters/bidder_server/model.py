@@ -29,4 +29,5 @@ class EndBidderSessionModel(BaseModel):
 class BidderSessionResponseModel(BaseModel):
     session_id: str
     status: SessionStatusEnum
+    exchange_session_id: str
     result: ResultEnum
