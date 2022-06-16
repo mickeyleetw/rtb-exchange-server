@@ -1,10 +1,16 @@
 version: '3'
 services:
   exchange-api:
-    container_name: exchange-api-server
+    container_name: exchange-server
     build:
       context: .
       dockerfile: Dockerfile
-    image: api-server
+    image: exchange-server
     ports:
       - '3001:3001'
+    networks:
+      - exchange-net-work
+networks:
+  exchange-net-work:
+    external:
+      name: rtb_network

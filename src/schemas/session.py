@@ -9,7 +9,6 @@ from core.enums import SessionStatusEnum
 class BidderSchema(BaseModel):
     name: str
     endpoint: str
-    session_id: Optional[str]
     session_status: Optional[SessionStatusEnum]
 
 

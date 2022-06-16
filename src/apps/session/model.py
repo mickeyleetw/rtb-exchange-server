@@ -1,8 +1,11 @@
+import decimal
 from decimal import Decimal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from core.enums import ResultEnum, SessionStatusEnum
+
+decimal.Context(prec=2)
 
 
 class BidderModel(BaseModel):
@@ -11,13 +14,13 @@ class BidderModel(BaseModel):
 
 
 class BidderRequirementModel(BaseModel):
-    budget: Decimal
-    impression_goal: int
+    budget: Decimal = Field(gt=0)
+    impression_goal: int = Field(gt=0)
 
 
 class InitSessionModel(BaseModel):
     session_id: str
-    estimated_traffic: int
+    estimated_traffic: int = Field(gt=0)
     bidders: list[BidderModel]
     bidder_setting: BidderRequirementModel
 

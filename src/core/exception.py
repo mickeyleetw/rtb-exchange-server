@@ -18,8 +18,7 @@ class BaseException_(Exception):
 
 
 class BidderServiceException(BaseException_):
-    http_status = status.HTTP_400_BAD_REQUEST
-    code = ErrorCode.BIDDER_API_3001_UNKNOWN_ERROR
+    code = ErrorCode.BIDDER_API_2001_UNKNOWN_ERROR
     message = 'Bidder API service error'
 
     def __init__(self, msg=None, **kwargs):
@@ -32,17 +31,9 @@ class ResourceNotFoundException(BaseException_):
 
     def __init__(self, subject: str):
         super().__init__(
-            code=ErrorCode.RESOURCE_2001_NOT_FOUND,
+            code=ErrorCode.GENERAL_1005_RESOURCE_NOT_FOUND,
             http_status=status.HTTP_404_NOT_FOUND,
             message=f'{subject} not found'
-        )
-
-
-class UnauthorizedBehaviorException(BaseException_):
-
-    def __init__(self, message: str):
-        super().__init__(
-            http_status=status.HTTP_403_FORBIDDEN, code=ErrorCode.GENERAL_1004_UNAUTHORIZED_BEHAVIOR, message=message
         )
 
 
@@ -53,4 +44,24 @@ class InvalidStateTransitionException(BaseException_):
             code=ErrorCode.GENERAL_1003_INVALID_STATE_TRANSITION,
             http_status=status.HTTP_403_FORBIDDEN,
             message='state error'
+        )
+
+
+class NoBidderResponseException(BaseException_):
+
+    def __init__(self):
+        super().__init__(
+            code=ErrorCode.GENERAL_1006_NO_BIDDER_RESPONSE,
+            http_status=status.HTTP_406_NOT_ACCEPTABLE,
+            message='Init session failed due to no bidder response'
+        )
+
+
+class DuplicateRecordException(BaseException_):
+
+    def __init__(self, subject: str):
+        super().__init__(
+            code=ErrorCode.GENERAL_1004_DUPLICATE_RECORD,
+            http_status=status.HTTP_409_CONFLICT,
+            message=f'{subject} is duplicate'
         )

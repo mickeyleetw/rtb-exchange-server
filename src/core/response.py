@@ -60,33 +60,47 @@ def response_404(subject: str) -> dict:
                     {
                         'application/json':
                             {
-                                'example': {
-                                    'code': ErrorCode.RESOURCE_2001_NOT_FOUND,
-                                    'message': 'resource not found'
-                                }
+                                'example':
+                                    {
+                                        'code': ErrorCode.GENERAL_1005_RESOURCE_NOT_FOUND,
+                                        'message': 'resource not found'
+                                    }
                             }
                     },
             }
     }
 
 
-def response_403(code: ErrorCode, message: str) -> dict:
+def response_403() -> dict:
     return {
         status.HTTP_403_FORBIDDEN:
             {
                 'model': ErrorMessage,
                 'description': 'Forbidden',
-                'content': {
-                    'application/json': {
-                        'example': {
-                            'code': code,
-                            'message': message
-                        }
+                'content':
+                    {
+                        'application/json':
+                            {
+                                'example':
+                                    {
+                                        'code': ErrorCode.GENERAL_1003_INVALID_STATE_TRANSITION,
+                                        'message': 'state error'
+                                    }
+                            }
                     }
-                }
             }
     }
 
 
-def response_400() -> dict:
-    return {status.HTTP_400_BAD_REQUEST: {'model': ErrorMessage, 'description': 'Bidder API unexpected error'}}
+def response_406() -> dict:
+    return {
+        status.HTTP_406_NOT_ACCEPTABLE:
+            {
+                'model': ErrorMessage,
+                'description': 'Init session failed due to no bidder acceptance'
+            }
+    }
+
+
+def response_409() -> dict:
+    return {status.HTTP_409_CONFLICT: {'model': ErrorMessage, 'description': 'Conflict'}}
